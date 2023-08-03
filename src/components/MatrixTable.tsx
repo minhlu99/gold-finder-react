@@ -174,7 +174,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   };
 
   return (
-    <div>
+    <div className="matrixTable-container">
       <table id="matrixTable">
         <table className="matrixTable-child">
           <tr className="headerRow">
