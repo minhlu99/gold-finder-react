@@ -21,7 +21,7 @@ h1 {
 }
 
 .white {
-  background-image: '../public/Solid_white.png';
+  background-image: '../src/assets/Solid_white.png';
   border: 1px solid black;
   cursor: pointer;
 }
@@ -43,7 +43,7 @@ height: 30px;
 }
 
 .red {
-  background-image: '../public/Solid_white.png';
+  background-image: '../src/assets/Solid_white.png';
   border: 1px solid black;
   cursor: pointer;
 }
@@ -260,7 +260,7 @@ align-items: center;
 }
 
 #matrixTable td.flag {
-  background-image: url('../public/flag.svg');
+  background-image: url('/public/flag.svg');
   background-repeat: no-repeat;
   border: orange 3px solid;
 }

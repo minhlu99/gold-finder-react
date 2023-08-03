@@ -1,14 +1,19 @@
+import flagImg from '../assets/flag.svg'
+import goldImg from '../assets/pot-of-gold.png'
+import boomImg from '../assets/boom-3307008.png'
+
 export default function Introduction() {
     return (
         <div className="tutorial-container">
             <h3 className="tutorial-header">Tutorial</h3>
             <div className="left-click">
-                <img src="../../public/pot-of-gold.svg" className="left-click-image gold-image" alt="gold"></img>
-                <img src="../../public/boom-3307008.svg" className="left-click-image" alt="boom"></img>
+                <img src={goldImg} className="left-click-image gold-image" alt="gold"></img>
+
+                <img src={boomImg} className="left-click-image" alt="boom"></img>
                 <p>Left Mouse Click</p>
             </div>
             <div className="right-click">
-                <img src="../../public/flag.svg" className="right-click-image" alt="flag"></img>
+                <img src={flagImg} className="right-click-image" alt="flag"></img>
                 <p>Right Mouse Click</p>
             </div>
 
