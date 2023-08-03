@@ -1,3 +1,4 @@
+import { log } from "console";
 import { useEffect, useMemo, useState } from "react";
 
 interface MatrixTableProps {
@@ -26,26 +27,26 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
         if (!matrix || matrix.length === 0) return []
         const rowLength = matrix.length
         const colLength = matrix[0].length
-        
+
         const colCounters = []
-            for (let j = 0; j < colLength; j++) {
-                const col = []
-                let colCounter = 0
-                for (let i = 0; i < rowLength; i++) {
-                    if (matrix[i][j].color === 'red') {
-                        colCounter++
-                    }
-                    else if (colCounter > 0) {
-                        col.push(colCounter);
-                        colCounter = 0;
-                    }
+        for (let j = 0; j < colLength; j++) {
+            const col = []
+            let colCounter = 0
+            for (let i = 0; i < rowLength; i++) {
+                if (matrix[i][j].color === 'red') {
+                    colCounter++
                 }
-                if (colCounter > 0) {
-                    col.push(colCounter)
+                else if (colCounter > 0) {
+                    col.push(colCounter);
+                    colCounter = 0;
                 }
-                colCounters.push(col)
             }
-            return colCounters
+            if (colCounter > 0) {
+                col.push(colCounter)
+            }
+            colCounters.push(col)
+        }
+        return colCounters
     }, [matrix])
 
     const _rowCounter = useMemo(() => {
@@ -97,12 +98,12 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
         setElapsedTime(0);
 
         const interval = setInterval(() => {
-            if (!gameOver) {
+            
                 const currentTime = Date.now();
                 const timeDifference = currentTime - startTime;
                 const elapsedSeconds = Math.floor(timeDifference / 1000);
                 setElapsedTime(elapsedSeconds);
-            }
+            
         }, 1000);
 
         setTimerInterval(interval);
@@ -123,51 +124,51 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
         }
     }, [gameOver, timerInterval]);
 
-function checkWin() {
-        const cells1 = document.querySelectorAll(".red");
-        const cells2 = document.querySelectorAll(".turn-boom");
-      
-        if (cells1.length === 0 && cells2.length === 0) {
 
-            setShowWinModal(true)
-            setGameOver(true);
 
-        }
-        if (cells2.length === 1) {
-            setShowLoseModal(true)
-            setGameOver(true);
-
-        }
-    }
-      
-    
-      function handleFlag(rowIndex: number, cellIndex: number) {
+    function handleFlag(rowIndex: number, cellIndex: number) {
         if (gameOver) return; //disable click when game over
         const newMat = [...matrix];
         newMat[rowIndex][cellIndex].flag = !newMat[rowIndex][cellIndex].flag;
         setMatrix(newMat);
-      }
-    
-      function handleClick(rowIndex: number, cellIndex: number) {
+    }
+
+    function handleClick(rowIndex: number, cellIndex: number) {
         if (gameOver) return; //disable click when game over
         const newMat = [...matrix]
         newMat[rowIndex][cellIndex].open = true
         setMatrix(newMat)
-        checkWin();
+
+        if (newMat[rowIndex][cellIndex].color === 'white') {
+            setShowLoseModal(true)
+            setGameOver(true);
+        }
+
+        if (
+          newMat
+            .flat(1)
+            .filter((x) => x.color === "red")
+            .every((x) => x.open === true)
+        ) {
+          setShowWinModal(true);
+          setGameOver(true);
+        }
+
+
     }
 
 
-  // Close Button
-  const closeModal1 = () => {
-    setShowWinModal(false);
-  };
+    // Close Button
+    const closeModal1 = () => {
+        setShowWinModal(false);
+    };
 
-  const closeModal3 = () => {
-    setShowLoseModal(false);
-  };
+    const closeModal3 = () => {
+        setShowLoseModal(false);
+    };
 
-    
-    return(
+
+    return (
         <div>
             <table id="matrixTable">
                 <table className="matrixTable-child">
@@ -178,71 +179,72 @@ function checkWin() {
                         </td>)}
                     </tr>
                     {matrix.map((row, rowIndex) => (
-            <tr key={rowIndex + 1}>
-              <td className="countersWrapper">
-                <div className="counters">
-                  {_rowCounter[rowIndex].map((value, index) => (
-                    <div key={index} className="counter">
-                      {value}
-                    </div>
-                  ))}
-                </div>
-              </td>
-              {row.map((cell, cellIndex) => (
-                <td
-                  key={rowIndex * cols + cellIndex}
-                  onClick={() => {
-                    handleClick(rowIndex, cellIndex)
-                }}
-                  onContextMenu={(event) => {
-                    event.preventDefault()
-                    handleFlag(rowIndex, cellIndex)}}
-                  className={`cell-size ${cell.color} 
+                        <tr key={rowIndex + 1}>
+                            <td className="countersWrapper">
+                                <div className="counters">
+                                    {_rowCounter[rowIndex].map((value, index) => (
+                                        <div key={index} className="counter">
+                                            {value}
+                                        </div>
+                                    ))}
+                                </div>
+                            </td>
+                            {row.map((cell, cellIndex) => (
+                                <td
+                                    key={rowIndex * cols + cellIndex}
+                                    onClick={() => {
+                                        handleClick(rowIndex, cellIndex)
+                                    }}
+                                    onContextMenu={(event) => {
+                                        event.preventDefault()
+                                        handleFlag(rowIndex, cellIndex)
+                                    }}
+                                    className={`cell-size ${cell.color} 
                   ${cell.open && (cell.color === 'red') && 'turn-gold'} 
                   ${cell.open && (cell.color === 'white') && 'turn-boom'} 
                   ${cell.flag && 'flag'}`}
-                ></td>
-              ))}
-            </tr>
-          ))}
-                    
+                                ></td>
+                            ))}
+                        </tr>
+                    ))}
+
 
                 </table>
             </table>
             <div className="timer-container">
-        <span id="timer">{new Date(elapsedTime * 1000).toISOString().substr(11, 8)}</span>
-    </div>
-                  {/* Win Modal */}
-                  {showWinModal && (
-        <div className="overlay" id="popup1">
-          <div className="popup">
-            <h2 id="win-header">Congratulations, You Win!</h2>
-            <p className="time-taken">
-              Time Taken: 
-              <span id="win-time">{new Date(elapsedTime * 1000).toISOString().substr(11, 8)}</span>
-            </p>
-            <br />
-            <button onClick={closeModal1} className="glow-on-hover close-btn">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-        {/* Lose Modal */}
-      {showLoseModal && (
-        <div className="overlay" id="popup3">
-          <div className="popup">
-            <div className="lose-wrapper">
-              <h2>Oops! ... You clicked on a bomb!</h2>
-              <br />
-              <button onClick={closeModal3} className="glow-on-hover">
-                Close
-              </button>
+                <span id="timer">{new Date(elapsedTime * 1000).toISOString().substr(11, 8)}</span>
             </div>
-          </div>
-        </div>
-      )}
+            {/* Win Modal */}
+            {showWinModal && (
+                <div className="overlay" id="popup1">
+                    <div className="popup">
+                        <h2 id="win-header">Congratulations, You Win!</h2>
+                        <p className="time-taken">
+                            Time Taken:
+                            <span id="win-time">{new Date(elapsedTime * 1000).toISOString().substr(11, 8)}</span>
+                        </p>
+                        <br />
+                        <button onClick={closeModal1} className="glow-on-hover close-btn">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Lose Modal */}
+            {showLoseModal && (
+                <div className="overlay" id="popup3">
+                    <div className="popup">
+                        <div className="lose-wrapper">
+                            <h2>Oops! ... You clicked on a bomb!</h2>
+                            <br />
+                            <button onClick={closeModal3} className="glow-on-hover">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
-      }
+}
