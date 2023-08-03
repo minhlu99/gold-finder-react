@@ -4,7 +4,6 @@ import MatrixTable from "./MatrixTable"
 
 export default function Input({ onStart } : { onStart: (size: string) => void }) {
     const [ value, setValue ] = useState("6")
-    const [ isPlay, SetIsPlay] = useState(false)
 
     return (
         <div>
@@ -39,7 +38,7 @@ export default function Input({ onStart } : { onStart: (size: string) => void })
         </div>
     </div>
 
-    {/* <MatrixTable rows={value} cols={value} isPlay={isPlay}/> */}
+    {/* <MatrixTable rows={value} cols={value}/> */}
         </div>
     )
 }

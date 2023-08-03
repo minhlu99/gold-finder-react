@@ -221,7 +221,7 @@ align-items: center;
 
 /* Styles for the modal */
 .overlay {
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
