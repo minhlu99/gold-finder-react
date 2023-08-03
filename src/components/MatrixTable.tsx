@@ -3,12 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 interface MatrixTableProps {
     rows: number;
     cols: number;
+    time: number;
 }
 
-export default function MatrixTable({ rows, cols }: MatrixTableProps) {
+export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
 
     const [gameOver, setGameOver] = useState(false)
-    const [winTime, setWinTime] = useState<NodeJS.Timeout | null>(null);
     const [showWinModal, setShowWinModal] = useState(false);
     const [showLoseModal, setShowLoseModal] = useState(false);
     const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
@@ -88,30 +88,30 @@ export default function MatrixTable({ rows, cols }: MatrixTableProps) {
 
         const interval = setInterval(() => {
             if (!gameOver) {
-              const currentTime = Date.now();
-              const timeDifference = currentTime - startTime;
-              const elapsedSeconds = Math.floor(timeDifference / 1000);
-              setElapsedTime(elapsedSeconds);
+                const currentTime = Date.now();
+                const timeDifference = currentTime - startTime;
+                const elapsedSeconds = Math.floor(timeDifference / 1000);
+                setElapsedTime(elapsedSeconds);
             }
-          }, 1000);
-    
+        }, 1000);
+
         setTimerInterval(interval);
 
         return () => {
             if (interval) {
                 clearInterval(interval);
             }
-            };
-        }, [rows, cols]);
+        };
+    }, [rows, cols, time]);
 
-        useEffect(() => {
-            if (gameOver) {
-              // Game is over, stop the timer
-              if (timerInterval) {
+    useEffect(() => {
+        if (gameOver) {
+            // Game is over, stop the timer
+            if (timerInterval) {
                 clearInterval(timerInterval);
-              }
             }
-          }, [gameOver, timerInterval]);
+        }
+    }, [gameOver, timerInterval]);
 
 function checkWin() {
         const cells1 = document.querySelectorAll(".red");
@@ -161,7 +161,6 @@ function checkWin() {
   // Close Button
   const closeModal1 = () => {
     setShowWinModal(false);
-    setWinTime(null);
   };
 
   const closeModal3 = () => {
