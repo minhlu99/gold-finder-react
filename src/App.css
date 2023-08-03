@@ -11,6 +11,10 @@ height: 100%;
 width: 1400px;
 }
 
+.App {
+  display: flex;
+}
+
 h1 {
   text-align: center;
   color: #dfb52a;
@@ -25,6 +29,7 @@ h1 {
 .cell-size {
 width: 50px;
 height: 50px;
+border: 1px solid black;
 }
 
 .modify-cell-size {

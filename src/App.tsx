@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css';
 import Input from './components/Input';
 import Introduction from './components/Introduction';
@@ -6,13 +7,20 @@ import Timer from './components/Timer';
 
 
 function App() {
+  const [ size, setSize ] = useState(0)
+
+  console.log(size)
   return (
     <div className="App">
-        <Input onStart={(size) => {
-          console.log('start game with' + size + ' size')
+      <div>
+
+      <Input onStart={(_size) => {
+          setSize(parseInt(_size))
         }} />
         <Introduction />
-        <MatrixTable/>
+      </div>
+
+        <MatrixTable rows={size} cols={size} />
     </div>
   );
 }

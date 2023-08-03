@@ -1,10 +1,13 @@
 import { useState } from "react"
+import MatrixTable from "./MatrixTable"
 
 
 export default function Input({ onStart } : { onStart: (size: string) => void }) {
     const [ value, setValue ] = useState("6")
+    const [ isPlay, SetIsPlay] = useState(false)
 
     return (
+        <div>
         <div className="input-container">
         <div className="input-group">
             <div className="input-wrapper">
@@ -27,10 +30,16 @@ export default function Input({ onStart } : { onStart: (size: string) => void })
                     <option value="18">18 x 18 (Expert)</option>
                     <option value="20">20 x 20 (Expert)</option>
                 </select>
-                <button id="play-btn" onClick={() => onStart(value)} className="glow-on-hover">
+                <button id="play-btn" onClick={() => {
+                    // console.log(value)
+                    onStart(value)
+                }} className="glow-on-hover">
                 Play!</button>
             </div>
         </div>
     </div>
+
+    {/* <MatrixTable rows={value} cols={value} isPlay={isPlay}/> */}
+        </div>
     )
 }
