@@ -6,6 +6,12 @@ interface MatrixTableProps {
     time: number;
 }
 
+interface ICell {
+    color: string;
+    open: boolean;
+    flag: boolean;
+}
+
 export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
 
     const [gameOver, setGameOver] = useState(false)
@@ -14,7 +20,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     const startTime = Date.now();
-    const [matrix, setMatrix] = useState<string[][]>([])
+    const [matrix, setMatrix] = useState<ICell[][]>([])
 
     const _colCounter = useMemo(() => {
         if (!matrix || matrix.length === 0) return []
@@ -26,7 +32,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                 const col = []
                 let colCounter = 0
                 for (let i = 0; i < rowLength; i++) {
-                    if (matrix[i][j] === 'red') {
+                    if (matrix[i][j].color === 'red') {
                         colCounter++
                     }
                     else if (colCounter > 0) {
@@ -53,7 +59,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
             let rowCounter = 0
             temp.push([])
             for (let j = 0; j < colLength; j++) {
-                if (matrix[i][j] === 'red') {
+                if (matrix[i][j].color === 'red') {
                     rowCounter++
                 }
                 else if (rowCounter > 0) {
@@ -69,14 +75,18 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     }, [matrix])
 
     useEffect(() => {
-        const temp: string[][] = []
+        const temp: ICell[][] = []
 
         for (let i = 0; i < rows; i++) {
-            const row: string[] = [];
+            const row: ICell[] = [];
 
             for (let j = 0; j < rows; j++) {
                 let color = (Math.random() < 0.5) ? 'white' : 'red';
-                row.push(color)
+                row.push({
+                    color: color,
+                    open: false,
+                    flag: false,
+                })
             }
             temp.push(row)
         }
@@ -131,29 +141,18 @@ function checkWin() {
     }
       
     
-      function handleFlag(event: React.MouseEvent<HTMLTableCellElement, MouseEvent>) {
-        event.preventDefault();
+      function handleFlag(rowIndex: number, cellIndex: number) {
         if (gameOver) return; //disable click when game over
-        const cell = event.currentTarget;
-        if (!cell.classList.contains("flag")) {
-          cell.classList.add("flag");
-        } else {
-          cell.classList.remove("flag");
-        }
+        const newMat = [...matrix];
+        newMat[rowIndex][cellIndex].flag = !newMat[rowIndex][cellIndex].flag;
+        setMatrix(newMat);
       }
     
-      function handleClick(event: React.MouseEvent<HTMLTableCellElement, MouseEvent>) {
+      function handleClick(rowIndex: number, cellIndex: number) {
         if (gameOver) return; //disable click when game over
-        const cell = event.currentTarget;
-        if (cell.classList.contains("flag")) return;
-        if (cell.classList.contains("red")) {
-          cell.classList.remove("red");
-          cell.classList.add("turn-gold");
-        }
-        if (cell.classList.contains("white")) {
-          cell.classList.remove("white");
-          cell.classList.add("turn-boom");
-        }
+        const newMat = [...matrix]
+        newMat[rowIndex][cellIndex].open = true
+        setMatrix(newMat)
         checkWin();
     }
 
@@ -192,9 +191,16 @@ function checkWin() {
               {row.map((cell, cellIndex) => (
                 <td
                   key={rowIndex * cols + cellIndex}
-                  onClick={handleClick}
-                  onContextMenu={handleFlag}
-                  className={`cell-size ${cell}`}
+                  onClick={() => {
+                    handleClick(rowIndex, cellIndex)
+                }}
+                  onContextMenu={(event) => {
+                    event.preventDefault()
+                    handleFlag(rowIndex, cellIndex)}}
+                  className={`cell-size ${cell.color} 
+                  ${cell.open && (cell.color === 'red') && 'turn-gold'} 
+                  ${cell.open && (cell.color === 'white') && 'turn-boom'} 
+                  ${cell.flag && 'flag'}`}
                 ></td>
               ))}
             </tr>
