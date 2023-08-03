@@ -23,6 +23,19 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const startTime = Date.now();
   const [matrix, setMatrix] = useState<ICell[][]>([]);
+  const [highlightedRowIndex, setHighlightedRowIndex] = useState<number | null>(null);
+  const [highlightedColIndex, setHighlightedColIndex] = useState<number | null>(null);
+
+
+  function handleMouseEnter(rowIndex: number, cellIndex: number) {
+    setHighlightedRowIndex(rowIndex);
+    setHighlightedColIndex(cellIndex);
+  }
+
+  function handleMouseLeave() {
+    setHighlightedRowIndex(null);
+    setHighlightedColIndex(null);
+  }
 
   const _colCounter = useMemo(() => {
     if (!matrix || matrix.length === 0) return [];
@@ -149,6 +162,58 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     }
   }
 
+  //Highlight row and col
+  function highlightRowAndCol(rowIndex: number, cellIndex: number) {
+    const rows = document.querySelectorAll('.matrixTable-child tr');
+    const cols = document.querySelectorAll('.counterWrapper td');
+  
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i + 1];
+      if (i + 1 === rowIndex) {
+        row.className = `highlight h-cols-${cellIndex + 1}`;
+      } else {
+        row.className = `h-cols-${cellIndex + 1}`;
+      }
+    }
+  
+    for (let j = 0; j < cols.length; j++) {
+      const col = cols[j];
+      if (j === cellIndex) {
+        col.classList.add('highlight');
+      } else {
+        col.classList.remove('highlight');
+      }
+    }
+  }
+  
+  function clearHighlight() {
+    const cells = document.querySelectorAll('.modify-cell-size');
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].classList.remove('highlight');
+    }
+  
+    const rows = document.querySelectorAll('.matrixTable-child tr');
+    for (let i = 0; i < rows.length; i++) {
+      rows[i + 1].className = '';
+    }
+  
+    const cols = document.querySelectorAll('.counterWrapper td');
+    for (let j = 0; j < cols.length; j++) {
+      cols[j].classList.remove('highlight');
+    }
+  }
+
+  function setupCellHoverEvents(rowIndex: number, cellIndex: number) {
+    const cells = document.querySelectorAll('.modify-cell-size');
+    cells.forEach((cell) => {
+      cell.addEventListener('mouseenter', () => {
+        highlightRowAndCol(rowIndex, cellIndex);
+      });
+  
+      cell.addEventListener('mouseleave', clearHighlight);
+    });
+  }
+
   // Close Button
   const closeModal1 = () => {
     setShowWinModal(false);
@@ -173,7 +238,8 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
             ))}
           </tr>
           {matrix.map((row, rowIndex) => (
-            <tr key={rowIndex + 1}>
+            <tr key={rowIndex + 1}
+            className={highlightedRowIndex === rowIndex ? `highlight` : ``}>
               <td className="countersWrapper">
                 <div className="counters">
                   {_rowCounter[rowIndex].map((value, index) => (
@@ -193,6 +259,8 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                     event.preventDefault();
                     handleFlag(rowIndex, cellIndex);
                   }}
+                  onMouseEnter={() => handleMouseEnter(rowIndex, cellIndex)}
+                  onMouseLeave={handleMouseLeave}
                   className={`
                     cell-size
                     ${rows > 10 && "modify-cell-size"}
@@ -200,7 +268,10 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                     ${cell.color} 
                     ${cell.open && cell.color === "red" && "turn-gold"} 
                     ${cell.open && cell.color === "white" && "turn-boom"} 
-                    ${cell.flag && "flag"}`}
+                    ${cell.flag && "flag"}
+                    ${highlightedColIndex === cellIndex ? `highlight` : ``}
+                    `}
+                    
                 ></td>
               ))}
             </tr>
