@@ -162,57 +162,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     }
   }
 
-  //Highlight row and col
-  function highlightRowAndCol(rowIndex: number, cellIndex: number) {
-    const rows = document.querySelectorAll('.matrixTable-child tr');
-    const cols = document.querySelectorAll('.counterWrapper td');
-  
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i + 1];
-      if (i + 1 === rowIndex) {
-        row.className = `highlight h-cols-${cellIndex + 1}`;
-      } else {
-        row.className = `h-cols-${cellIndex + 1}`;
-      }
-    }
-  
-    for (let j = 0; j < cols.length; j++) {
-      const col = cols[j];
-      if (j === cellIndex) {
-        col.classList.add('highlight');
-      } else {
-        col.classList.remove('highlight');
-      }
-    }
-  }
-  
-  function clearHighlight() {
-    const cells = document.querySelectorAll('.modify-cell-size');
-    for (let i = 0; i < cells.length; i++) {
-      cells[i].classList.remove('highlight');
-    }
-  
-    const rows = document.querySelectorAll('.matrixTable-child tr');
-    for (let i = 0; i < rows.length; i++) {
-      rows[i + 1].className = '';
-    }
-  
-    const cols = document.querySelectorAll('.counterWrapper td');
-    for (let j = 0; j < cols.length; j++) {
-      cols[j].classList.remove('highlight');
-    }
-  }
 
-  function setupCellHoverEvents(rowIndex: number, cellIndex: number) {
-    const cells = document.querySelectorAll('.modify-cell-size');
-    cells.forEach((cell) => {
-      cell.addEventListener('mouseenter', () => {
-        highlightRowAndCol(rowIndex, cellIndex);
-      });
-  
-      cell.addEventListener('mouseleave', clearHighlight);
-    });
-  }
 
   // Close Button
   const closeModal1 = () => {
