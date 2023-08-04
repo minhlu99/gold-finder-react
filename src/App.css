@@ -372,29 +372,5 @@ align-items: center;
 }
 
 .highlight {
-background-color: #f2e552;
-}
-
-.h-cols-1 td:nth-child(1),
-.h-cols-2 td:nth-child(2),
-.h-cols-2 td:nth-child(2),
-.h-cols-3 td:nth-child(3),
-.h-cols-4 td:nth-child(4),
-.h-cols-5 td:nth-child(5),
-.h-cols-6 td:nth-child(6),
-.h-cols-7 td:nth-child(7),
-.h-cols-8 td:nth-child(8),
-.h-cols-9 td:nth-child(9),
-.h-cols-10 td:nth-child(10),
-.h-cols-11 td:nth-child(11),
-.h-cols-12 td:nth-child(12),
-.h-cols-13 td:nth-child(13),
-.h-cols-14 td:nth-child(14),
-.h-cols-15 td:nth-child(15),
-.h-cols-16 td:nth-child(16),
-.h-cols-17 td:nth-child(17),
-.h-cols-18 td:nth-child(18),
-.h-cols-19 td:nth-child(19),
-.h-cols-20 td:nth-child(20) {
-background-color: #f2e552;
+background-color: #f7f391;
 }
