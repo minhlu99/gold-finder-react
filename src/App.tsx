@@ -12,7 +12,7 @@ function App() {
   console.log(size)
   return (
     <div className="App">
-      <div>
+      <div className='input-container'>
 
       <Input onStart={(_size) => {
           setSize(parseInt(_size))

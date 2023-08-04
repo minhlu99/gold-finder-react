@@ -7,7 +7,6 @@ export default function Input({ onStart } : { onStart: (size: string) => void })
 
     return (
         <div>
-        <div className="input-container">
         <div className="input-group">
             <div className="input-wrapper">
                 <label htmlFor="rows" className="inp">
@@ -36,7 +35,6 @@ export default function Input({ onStart } : { onStart: (size: string) => void })
                 Play!</button>
             </div>
         </div>
-    </div>
 
     {/* <MatrixTable rows={value} cols={value}/> */}
         </div>
