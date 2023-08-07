@@ -35,6 +35,36 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   const [highlightedRowIndex, setHighlightedRowIndex] = useState<number | null>(null);
   const [highlightedColIndex, setHighlightedColIndex] = useState<number | null>(null);
 
+  function resetGame() {
+    const newMatrix: ICell[][] = [];
+  
+    // Initialize the matrix with the correct number of rows and columns
+    for (let i = 0; i < rows; i++) {
+      const row: ICell[] = [];
+      for (let j = 0; j < cols; j++) {
+        row.push({
+          color: Math.random() < 0.5 ? "white" : "red",
+          open: false,
+          flag: false,
+        });
+      }
+      newMatrix.push(row);
+    }
+  
+    setMatrix(newMatrix);
+    set_ColCounter([]);
+    set_RowCounter([]);
+    setGameOver(false);
+    setShowWinModal(false);
+    setShowLoseModal(false);
+    setElapsedTime(0);
+    setTimerInterval(null);
+    setOpenedGoldCells(0);
+    setHighlightedRowIndex(null);
+    setHighlightedColIndex(null);
+    setIdMatrix('');
+  }
+
 
   function handleMouseEnter(rowIndex: number, cellIndex: number) {
     setHighlightedRowIndex(rowIndex);
@@ -49,6 +79,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   async function createMatrix() {
     try {
       console.log("createMatrix");
+      resetGame();
       const newMatrix = await genMatrixApi.getMatrix(rows);
       set_RowCounter(newMatrix.data.rowCounters);
       set_ColCounter(newMatrix.data.colCounters);
@@ -118,13 +149,16 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   }, [gameOver, timerInterval]);
 
   function handleFlag(rowIndex: number, cellIndex: number) {
-    if (gameOver) return; //disable click when game over
+    if (gameOver || matrix[rowIndex][cellIndex].open) return; //disable click when game over
     const newMat = [...matrix];
     newMat[rowIndex][cellIndex].flag = !newMat[rowIndex][cellIndex].flag;
     setMatrix(newMat);
   }
 
   async function handleClick(idMatrix: string, rowIndex: number, cellIndex: number) {
+    const newMat = [...matrix];
+    newMat[rowIndex][cellIndex].open = true;
+    setMatrix(newMat);
     if (gameOver) return;
     try {
       console.log("createMatrix");
@@ -134,30 +168,33 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
 
       setCellStatus((prevCellStatus) => {
         const cellKey = `${rowIndex}-${cellIndex}`;
+
+        // check lose
         if (result === 'boom') {
           setShowLoseModal(true);
           setGameOver(true);
           return { ...prevCellStatus, [cellKey]: 'boom' };
         } else if (result === 'gold') {
-          setOpenedGoldCells((prevCount) => prevCount + 1);
+          setOpenedGoldCells((prevCount) => prevCount + 1)
+
           return { ...prevCellStatus, [cellKey]: 'gold' };
         } else {
           return { ...prevCellStatus, [cellKey]: 'unopened' };
         }
       });
-      if (openedGoldCells === totalGold) {
-        setShowWinModal(true);
-        setGameOver(true);
-      }
+
+                      //check win
+                      if (openedGoldCells === totalGold) {
+                        setShowWinModal(true);
+                        setGameOver(true);
+                      }
+
       
     } catch (error) {
       console.error("Error in createMatrix:", error);
       throw error;
     }
-   //disable click when game over
-    // const newMat = [...matrix];
-    // newMat[rowIndex][cellIndex].open = true;
-    // setMatrix(newMat);
+
 
     // if (newMat[rowIndex][cellIndex].color === "white") {
     //   setShowLoseModal(true);
@@ -234,8 +271,8 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                     ${rows > 10 && "modify-cell-size"}
                     ${rows > 15 && "modify-cell-size1"}
                     ${cell.color} 
-                    ${isOpened && isGold && "turn-gold"}
-                    ${isOpened && isBoom && "turn-boom"}
+                    ${cell.open && isGold && "turn-gold"}
+                    ${cell.open && isBoom && "turn-boom"}
                     ${cell.flag && "flag"}
                     ${highlightedColIndex === cellIndex ? `highlight` : ``}
                     `}
