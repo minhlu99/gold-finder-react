@@ -1,5 +1,7 @@
-import { log } from "console";
+import axios from 'axios';
 import { useEffect, useMemo, useState } from "react";
+import genMatrixApi from '../api/genMatrixApi';
+import handleClickApi from '../api/handleClickApi';
 
 interface MatrixTableProps {
   rows: number;
@@ -14,6 +16,13 @@ interface ICell {
 }
 
 export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
+
+  const [idMatrix, setIdMatrix] = useState<string>('')
+  const [totalGold, setTotalGold] = useState<number>(0)
+  const [openedGoldCells, setOpenedGoldCells] = useState<number>(1);
+  const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
+  const [_rowCounter, set_RowCounter] = useState<number[][]>([]); // Define rowCounter state
+  const [cellStatus, setCellStatus] = useState<{ [key: string]: 'boom' | 'gold' | 'unopened' }>({});
   const [gameOver, setGameOver] = useState(false);
   const [showWinModal, setShowWinModal] = useState(false);
   const [showLoseModal, setShowLoseModal] = useState(false);
@@ -37,54 +46,28 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     setHighlightedColIndex(null);
   }
 
-  const _colCounter = useMemo(() => {
-    if (!matrix || matrix.length === 0) return [];
-    const rowLength = matrix.length;
-    const colLength = matrix[0].length;
-
-    const colCounters = [];
-    for (let j = 0; j < colLength; j++) {
-      const col = [];
-      let colCounter = 0;
-      for (let i = 0; i < rowLength; i++) {
-        if (matrix[i][j].color === "red") {
-          colCounter++;
-        } else if (colCounter > 0) {
-          col.push(colCounter);
-          colCounter = 0;
-        }
-      }
-      if (colCounter > 0) {
-        col.push(colCounter);
-      }
-      colCounters.push(col);
+  async function createMatrix() {
+    try {
+      console.log("createMatrix");
+      const newMatrix = await genMatrixApi.getMatrix(rows);
+      set_RowCounter(newMatrix.data.rowCounters);
+      set_ColCounter(newMatrix.data.colCounters);
+      setIdMatrix(newMatrix.data.id)
+      setTotalGold(newMatrix.data.totalGold)
+      console.log(idMatrix);
+      
+  
+      return newMatrix
+    } catch (error) {
+      // Handle errors here, for example:
+      console.error("Error in createMatrix:", error);
+      throw error; // Rethrow the error to be caught at the calling site
     }
-    return colCounters;
-  }, [matrix]);
+  }
 
-  const _rowCounter = useMemo(() => {
-    if (!matrix || matrix.length === 0) return [];
-    const rowLength = matrix.length;
-    const colLength = matrix[0].length;
-
-    const temp: number[][] = [];
-    for (let i = 0; i < rowLength; i++) {
-      let rowCounter = 0;
-      temp.push([]);
-      for (let j = 0; j < colLength; j++) {
-        if (matrix[i][j].color === "red") {
-          rowCounter++;
-        } else if (rowCounter > 0) {
-          temp[i].push(rowCounter);
-          rowCounter = 0; // Reset rowCounter
-        }
-      }
-      if (rowCounter > 0) {
-        temp[i].push(rowCounter); // Save final rows value
-      }
-    }
-    return temp;
-  }, [matrix]);
+  useEffect(() => {
+    createMatrix()
+  }, [rows, time])
 
   useEffect(() => {
     const temp: ICell[][] = [];
@@ -124,6 +107,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     };
   }, [rows, cols, time]);
 
+
   useEffect(() => {
     if (gameOver) {
       // Game is over, stop the timer
@@ -140,26 +124,55 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     setMatrix(newMat);
   }
 
-  function handleClick(rowIndex: number, cellIndex: number) {
-    if (gameOver) return; //disable click when game over
-    const newMat = [...matrix];
-    newMat[rowIndex][cellIndex].open = true;
-    setMatrix(newMat);
+  async function handleClick(idMatrix: string, rowIndex: number, cellIndex: number) {
+    if (gameOver) return;
+    try {
+      console.log("createMatrix");
+      const res = await handleClickApi.handleClick(idMatrix, rowIndex, cellIndex);
 
-    if (newMat[rowIndex][cellIndex].color === "white") {
-      setShowLoseModal(true);
-      setGameOver(true);
-    }
+      const result = res.data
 
-    if (
-      newMat
-        .flat(1)
-        .filter((x) => x.color === "red")
-        .every((x) => x.open === true)
-    ) {
-      setShowWinModal(true);
-      setGameOver(true);
+      setCellStatus((prevCellStatus) => {
+        const cellKey = `${rowIndex}-${cellIndex}`;
+        if (result === 'boom') {
+          setShowLoseModal(true);
+          setGameOver(true);
+          return { ...prevCellStatus, [cellKey]: 'boom' };
+        } else if (result === 'gold') {
+          setOpenedGoldCells((prevCount) => prevCount + 1);
+          return { ...prevCellStatus, [cellKey]: 'gold' };
+        } else {
+          return { ...prevCellStatus, [cellKey]: 'unopened' };
+        }
+      });
+      if (openedGoldCells === totalGold) {
+        setShowWinModal(true);
+        setGameOver(true);
+      }
+      
+    } catch (error) {
+      console.error("Error in createMatrix:", error);
+      throw error;
     }
+   //disable click when game over
+    // const newMat = [...matrix];
+    // newMat[rowIndex][cellIndex].open = true;
+    // setMatrix(newMat);
+
+    // if (newMat[rowIndex][cellIndex].color === "white") {
+    //   setShowLoseModal(true);
+    //   setGameOver(true);
+    // }
+
+    // if (
+    //   newMat
+    //     .flat(1)
+    //     .filter((x) => x.color === "red")
+    //     .every((x) => x.open === true)
+    // ) {
+    //   setShowWinModal(true);
+    //   setGameOver(true);
+    // }
   }
 
 
@@ -179,7 +192,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
         <table className="matrixTable-child">
           <tr className="headerRow">
             <td></td>
-            {_colCounter.map((col) => (
+            {_colCounter?.map((col) => (
               <td className="counterWrapper">
                 {col.map((value) => (
                   <td className={`counter ${rows > 15 && 'modify-counter-font-size'}`}>{value}</td>
@@ -192,18 +205,23 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
             className={highlightedRowIndex === rowIndex ? `highlight` : ``}>
               <td className="countersWrapper">
                 <div className="counters">
-                  {_rowCounter[rowIndex].map((value, index) => (
+                  {_rowCounter[rowIndex]?.map((value, index) => (
                     <div key={index} className={`counter ${rows > 15 && 'modify-counter-font-size'}`}>
                       {value}
                     </div>
                   ))}
                 </div>
               </td>
-              {row.map((cell, cellIndex) => (
+              {row.map((cell, cellIndex) => {
+                              const cellKey = `${rowIndex}-${cellIndex}`;
+                              const isOpened = cellStatus[cellKey] !== 'unopened';
+                              const isBoom = cellStatus[cellKey] === 'boom';
+                              const isGold = cellStatus[cellKey] === 'gold';
+              return (
                 <td
                   key={rowIndex * cols + cellIndex}
                   onClick={() => {
-                    handleClick(rowIndex, cellIndex);
+                    handleClick(idMatrix, rowIndex, cellIndex);
                   }}
                   onContextMenu={(event) => {
                     event.preventDefault();
@@ -216,14 +234,14 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                     ${rows > 10 && "modify-cell-size"}
                     ${rows > 15 && "modify-cell-size1"}
                     ${cell.color} 
-                    ${cell.open && cell.color === "red" && "turn-gold"} 
-                    ${cell.open && cell.color === "white" && "turn-boom"} 
+                    ${isOpened && isGold && "turn-gold"}
+                    ${isOpened && isBoom && "turn-boom"}
                     ${cell.flag && "flag"}
                     ${highlightedColIndex === cellIndex ? `highlight` : ``}
                     `}
                     
                 ></td>
-              ))}
+              )})}
             </tr>
           ))}
         </table>
