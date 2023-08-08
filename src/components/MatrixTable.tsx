@@ -1,7 +1,8 @@
-import axios from 'axios';
+
 import { useEffect, useMemo, useState } from "react";
 import genMatrixApi from '../api/genMatrixApi';
 import handleClickApi from '../api/handleClickApi';
+import checkWinApi from '../api/checkWin';
 
 interface MatrixTableProps {
   rows: number;
@@ -18,8 +19,7 @@ interface ICell {
 export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
 
   const [idMatrix, setIdMatrix] = useState<string>('')
-  const [totalGold, setTotalGold] = useState<number>(0)
-  const [openedGoldCells, setOpenedGoldCells] = useState<number>(1);
+  const [openedGoldCells, setOpenedGoldCells] = useState<number>(0);
   const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
   const [_rowCounter, set_RowCounter] = useState<number[][]>([]); // Define rowCounter state
   const [cellStatus, setCellStatus] = useState<{ [key: string]: 'boom' | 'gold' | 'unopened' }>({});
@@ -84,7 +84,6 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
       set_RowCounter(newMatrix.data.rowCounters);
       set_ColCounter(newMatrix.data.colCounters);
       setIdMatrix(newMatrix.data.id)
-      setTotalGold(newMatrix.data.totalGold)
       console.log(idMatrix);
       
   
@@ -177,18 +176,19 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
         } else if (result === 'gold') {
           setOpenedGoldCells((prevCount) => prevCount + 1)
 
+          
           return { ...prevCellStatus, [cellKey]: 'gold' };
         } else {
           return { ...prevCellStatus, [cellKey]: 'unopened' };
         }
       });
+      
+      const resultOfGame = await checkWinApi.checkWin(idMatrix, openedGoldCells)
 
-                      //check win
-                      if (openedGoldCells === totalGold) {
-                        setShowWinModal(true);
-                        setGameOver(true);
-                      }
-
+      if (resultOfGame.data === 'win') {
+          setShowWinModal(true);
+          setGameOver(true);
+      }
       
     } catch (error) {
       console.error("Error in createMatrix:", error);
