@@ -8,7 +8,7 @@ body {
 display: flex;
 flex-direction: row;
 height: 100%;
-width: 1400px;
+width: 1200px;
 }
 
 .App {
@@ -94,12 +94,12 @@ font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 920px;
+  width: 820px;
   height: 100vh;
 }
 
 .input-container {
-  margin-left: 50px;
+  margin-left: 20px;
 }
 
 .matrixTable-child {
@@ -339,7 +339,7 @@ text-align: center;
 .timer-container {
 position: absolute;
 top: 10px;
-right: 5px;
+right: 40px;
 margin-top: 50px;
 height: 50px;
 width: 180px;
@@ -352,8 +352,12 @@ border-radius: 20px;
 
 .time-taken {
 font-size: 28px;
-margin-top: 10px;
+margin: 10px 0px;
 border-radius: 5px;
+}
+
+#win-time {
+  margin-left: 5px;
 }
 
 #win-header {
@@ -373,4 +377,60 @@ align-items: center;
 
 .highlight {
 background-color: #f7f391;
+}
+
+.input-save-player {
+  outline: invert;
+  outline-color: #bf930f;
+  width: 70%;
+  height: 50px;
+  font-size: 18px;
+  padding: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 3px solid #f2e552;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.save-record-btn {
+  margin-bottom: 50px;
+  text-align: center;
+  width: 40%;
+  align-items: center;
+  left: 130px;
+}
+
+.leader-board-container {
+  border: 2px solid #bf930f;
+  width: 230px;
+  height: 620px;
+  margin-left: 5px;
+  position: absolute;
+  top: 150px;
+  right: 20px
+}
+
+.leader-board-content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.leader-board-header {
+  border-bottom: 2px solid #bf930f;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+}
+
+.leader-board-player {
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
 }

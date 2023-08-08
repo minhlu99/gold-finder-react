@@ -1,8 +1,8 @@
-
 import { useEffect, useMemo, useState } from "react";
-import genMatrixApi from '../api/genMatrixApi';
-import handleClickApi from '../api/handleClickApi';
-import checkWinApi from '../api/checkWin';
+import genMatrixApi from "../api/genMatrixApi";
+import handleClickApi from "../api/handleClickApi";
+import checkWinApi from "../api/checkWin";
+import saveRecordApi from "../api/saveRecord";
 
 interface MatrixTableProps {
   rows: number;
@@ -17,12 +17,14 @@ interface ICell {
 }
 
 export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
-
-  const [idMatrix, setIdMatrix] = useState<string>('')
+  const [idMatrix, setIdMatrix] = useState<string>("");
+  const [playerName, setPlayerName] = useState("");
   const [openedGoldCells, setOpenedGoldCells] = useState<number>(0);
   const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
   const [_rowCounter, set_RowCounter] = useState<number[][]>([]); // Define rowCounter state
-  const [cellStatus, setCellStatus] = useState<{ [key: string]: 'boom' | 'gold' | 'unopened' }>({});
+  const [cellStatus, setCellStatus] = useState<{
+    [key: string]: "boom" | "gold" | "unopened";
+  }>({});
   const [gameOver, setGameOver] = useState(false);
   const [showWinModal, setShowWinModal] = useState(false);
   const [showLoseModal, setShowLoseModal] = useState(false);
@@ -32,12 +34,16 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const startTime = Date.now();
   const [matrix, setMatrix] = useState<ICell[][]>([]);
-  const [highlightedRowIndex, setHighlightedRowIndex] = useState<number | null>(null);
-  const [highlightedColIndex, setHighlightedColIndex] = useState<number | null>(null);
+  const [highlightedRowIndex, setHighlightedRowIndex] = useState<number | null>(
+    null
+  );
+  const [highlightedColIndex, setHighlightedColIndex] = useState<number | null>(
+    null
+  );
 
   function resetGame() {
     const newMatrix: ICell[][] = [];
-  
+
     // Initialize the matrix with the correct number of rows and columns
     for (let i = 0; i < rows; i++) {
       const row: ICell[] = [];
@@ -50,7 +56,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
       }
       newMatrix.push(row);
     }
-  
+
     setMatrix(newMatrix);
     set_ColCounter([]);
     set_RowCounter([]);
@@ -62,9 +68,8 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     setOpenedGoldCells(0);
     setHighlightedRowIndex(null);
     setHighlightedColIndex(null);
-    setIdMatrix('');
+    setIdMatrix("");
   }
-
 
   function handleMouseEnter(rowIndex: number, cellIndex: number) {
     setHighlightedRowIndex(rowIndex);
@@ -83,11 +88,10 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
       const newMatrix = await genMatrixApi.getMatrix(rows);
       set_RowCounter(newMatrix.data.rowCounters);
       set_ColCounter(newMatrix.data.colCounters);
-      setIdMatrix(newMatrix.data.id)
+      setIdMatrix(newMatrix.data.id);
       console.log(idMatrix);
-      
-  
-      return newMatrix
+
+      return newMatrix;
     } catch (error) {
       // Handle errors here, for example:
       console.error("Error in createMatrix:", error);
@@ -96,8 +100,8 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
   }
 
   useEffect(() => {
-    createMatrix()
-  }, [rows, time])
+    createMatrix();
+  }, [rows, time]);
 
   useEffect(() => {
     const temp: ICell[][] = [];
@@ -137,7 +141,6 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     };
   }, [rows, cols, time]);
 
-
   useEffect(() => {
     if (gameOver) {
       // Game is over, stop the timer
@@ -154,65 +157,61 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     setMatrix(newMat);
   }
 
-  async function handleClick(idMatrix: string, rowIndex: number, cellIndex: number) {
+  async function handleClick(
+    idMatrix: string,
+    rowIndex: number,
+    cellIndex: number
+  ) {
     const newMat = [...matrix];
     newMat[rowIndex][cellIndex].open = true;
     setMatrix(newMat);
     if (gameOver) return;
     try {
       console.log("createMatrix");
-      const res = await handleClickApi.handleClick(idMatrix, rowIndex, cellIndex);
+      const res = await handleClickApi.handleClick(
+        idMatrix,
+        rowIndex,
+        cellIndex
+      );
 
-      const result = res.data
+      const result = res.data;
 
       setCellStatus((prevCellStatus) => {
         const cellKey = `${rowIndex}-${cellIndex}`;
 
         // check lose
-        if (result === 'boom') {
+        if (result === "boom") {
           setShowLoseModal(true);
           setGameOver(true);
-          return { ...prevCellStatus, [cellKey]: 'boom' };
-        } else if (result === 'gold') {
-          setOpenedGoldCells((prevCount) => prevCount + 1)
+          return { ...prevCellStatus, [cellKey]: "boom" };
+        } else if (result === "gold") {
+          setOpenedGoldCells((prevCount) => prevCount + 1);
 
-          
-          return { ...prevCellStatus, [cellKey]: 'gold' };
+          return { ...prevCellStatus, [cellKey]: "gold" };
         } else {
-          return { ...prevCellStatus, [cellKey]: 'unopened' };
+          return { ...prevCellStatus, [cellKey]: "unopened" };
         }
       });
-      
-      const resultOfGame = await checkWinApi.checkWin(idMatrix, openedGoldCells)
-
-      if (resultOfGame.data === 'win') {
-          setShowWinModal(true);
-          setGameOver(true);
-      }
-      
     } catch (error) {
       console.error("Error in createMatrix:", error);
       throw error;
     }
-
-
-    // if (newMat[rowIndex][cellIndex].color === "white") {
-    //   setShowLoseModal(true);
-    //   setGameOver(true);
-    // }
-
-    // if (
-    //   newMat
-    //     .flat(1)
-    //     .filter((x) => x.color === "red")
-    //     .every((x) => x.open === true)
-    // ) {
-    //   setShowWinModal(true);
-    //   setGameOver(true);
-    // }
   }
 
+  useEffect(() => {
+    if (!openedGoldCells) return;
+    (async () => {
+      const resultOfGame = await checkWinApi.checkWin(
+        idMatrix,
+        openedGoldCells
+      );
 
+      if (resultOfGame.data === "win") {
+        setShowWinModal(true);
+        setGameOver(true);
+      }
+    })();
+  }, [openedGoldCells]);
 
   // Close Button
   const closeModal1 = () => {
@@ -223,6 +222,22 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
     setShowLoseModal(false);
   };
 
+  async function saveRecord() {
+    try {
+      const recordData = {
+        name: playerName,
+        time: new Date(elapsedTime * 1000).toISOString().substr(11, 8),
+        level: rows,
+      };
+
+      await saveRecordApi.saveRecord(recordData)
+
+      setShowWinModal(false);
+    } catch (error) {
+      console.error("Error saving record:", error);
+    }
+  }
+
   return (
     <div className="matrixTable-container">
       <table id="matrixTable">
@@ -232,41 +247,54 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
             {_colCounter?.map((col) => (
               <td className="counterWrapper">
                 {col.map((value) => (
-                  <td className={`counter ${rows > 15 && 'modify-counter-font-size'}`}>{value}</td>
+                  <td
+                    className={`counter ${
+                      rows > 15 && "modify-counter-font-size"
+                    }`}
+                  >
+                    {value}
+                  </td>
                 ))}
               </td>
             ))}
           </tr>
           {matrix.map((row, rowIndex) => (
-            <tr key={rowIndex + 1}
-            className={highlightedRowIndex === rowIndex ? `highlight` : ``}>
+            <tr
+              key={rowIndex + 1}
+              className={highlightedRowIndex === rowIndex ? `highlight` : ``}
+            >
               <td className="countersWrapper">
                 <div className="counters">
                   {_rowCounter[rowIndex]?.map((value, index) => (
-                    <div key={index} className={`counter ${rows > 15 && 'modify-counter-font-size'}`}>
+                    <div
+                      key={index}
+                      className={`counter ${
+                        rows > 15 && "modify-counter-font-size"
+                      }`}
+                    >
                       {value}
                     </div>
                   ))}
                 </div>
               </td>
               {row.map((cell, cellIndex) => {
-                              const cellKey = `${rowIndex}-${cellIndex}`;
-                              const isOpened = cellStatus[cellKey] !== 'unopened';
-                              const isBoom = cellStatus[cellKey] === 'boom';
-                              const isGold = cellStatus[cellKey] === 'gold';
-              return (
-                <td
-                  key={rowIndex * cols + cellIndex}
-                  onClick={() => {
-                    handleClick(idMatrix, rowIndex, cellIndex);
-                  }}
-                  onContextMenu={(event) => {
-                    event.preventDefault();
-                    handleFlag(rowIndex, cellIndex);
-                  }}
-                  onMouseEnter={() => handleMouseEnter(rowIndex, cellIndex)}
-                  onMouseLeave={handleMouseLeave}
-                  className={`
+                const cellKey = `${rowIndex}-${cellIndex}`;
+                const isOpened = cellStatus[cellKey] !== "unopened";
+                const isBoom = cellStatus[cellKey] === "boom";
+                const isGold = cellStatus[cellKey] === "gold";
+                return (
+                  <td
+                    key={rowIndex * cols + cellIndex}
+                    onClick={() => {
+                      handleClick(idMatrix, rowIndex, cellIndex);
+                    }}
+                    onContextMenu={(event) => {
+                      event.preventDefault();
+                      handleFlag(rowIndex, cellIndex);
+                    }}
+                    onMouseEnter={() => handleMouseEnter(rowIndex, cellIndex)}
+                    onMouseLeave={handleMouseLeave}
+                    className={`
                     cell-size
                     ${rows > 10 && "modify-cell-size"}
                     ${rows > 15 && "modify-cell-size1"}
@@ -276,9 +304,9 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                     ${cell.flag && "flag"}
                     ${highlightedColIndex === cellIndex ? `highlight` : ``}
                     `}
-                    
-                ></td>
-              )})}
+                  ></td>
+                );
+              })}
             </tr>
           ))}
         </table>
@@ -288,6 +316,7 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
           {new Date(elapsedTime * 1000).toISOString().substr(11, 8)}
         </span>
       </div>
+
       {/* Win Modal */}
       {showWinModal && (
         <div className="overlay" id="popup1">
@@ -299,7 +328,14 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
                 {new Date(elapsedTime * 1000).toISOString().substr(11, 8)}
               </span>
             </p>
+            <input
+              className="input-save-player"
+              placeholder="Enter your name"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+            ></input>
             <br />
+            <button onClick={saveRecord} className="glow-on-hover save-record-btn">Save Record</button>
             <button onClick={closeModal1} className="glow-on-hover close-btn">
               Close
             </button>
