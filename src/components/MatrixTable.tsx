@@ -29,6 +29,7 @@ export default function MatrixTable({
 }: MatrixTableProps) {
   const [idMatrix, setIdMatrix] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [openedGoldCells, setOpenedGoldCells] = useState<number>(0);
   const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
@@ -248,7 +249,7 @@ export default function MatrixTable({
 
       await saveRecordApi.saveRecord(recordData);
 
-      setShowWinModal(false);
+      setIsSaved(true)
     } catch (error) {
       console.error("Error saving record:", error);
     }
@@ -366,7 +367,7 @@ export default function MatrixTable({
               onClick={saveRecord}
               className="glow-on-hover save-record-btn"
             >
-              Save Record
+              {isSaved ? "Saved!" : "Save Record"}
             </button>
             <p className="challenge-link-container">
               Challenge Your Friends:{" "}
