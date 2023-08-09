@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import genMatrixApi from "../api/genMatrixApi";
 import handleClickApi from "../api/handleClickApi";
 import checkWinApi from "../api/checkWin";
@@ -8,6 +8,9 @@ interface MatrixTableProps {
   rows: number;
   cols: number;
   time: number;
+  __colCounter: number[][];
+  __rowCounter: number[][];
+  playById: boolean;
 }
 
 interface ICell {
@@ -16,8 +19,16 @@ interface ICell {
   flag: boolean;
 }
 
-export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
+export default function MatrixTable({
+  rows,
+  cols,
+  time,
+  __colCounter,
+  __rowCounter,
+  playById,
+}: MatrixTableProps) {
   const [idMatrix, setIdMatrix] = useState<string>("");
+  const [isCopied, setIsCopied] = useState(false);
   const [playerName, setPlayerName] = useState("");
   const [openedGoldCells, setOpenedGoldCells] = useState<number>(0);
   const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
@@ -86,8 +97,13 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
       console.log("createMatrix");
       resetGame();
       const newMatrix = await genMatrixApi.getMatrix(rows);
-      set_RowCounter(newMatrix.data.rowCounters);
-      set_ColCounter(newMatrix.data.colCounters);
+      playById
+        ? set_RowCounter(__rowCounter)
+        : set_RowCounter(newMatrix.data.rowCounters);
+      playById
+        ? set_ColCounter(__colCounter)
+        : set_ColCounter(newMatrix.data.colCounters);
+
       setIdMatrix(newMatrix.data.id);
       console.log(idMatrix);
 
@@ -230,12 +246,23 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
         level: rows,
       };
 
-      await saveRecordApi.saveRecord(recordData)
+      await saveRecordApi.saveRecord(recordData);
 
       setShowWinModal(false);
     } catch (error) {
       console.error("Error saving record:", error);
     }
+  }
+
+  function generateChallengeLink() {
+    return `http://localhost:3000/?id=${idMatrix}`;
+  }
+
+  function copyChallengeLink() {
+    const challengeLink = generateChallengeLink();
+    navigator.clipboard.writeText(challengeLink).then(() => {
+      setIsCopied(true);
+    });
   }
 
   return (
@@ -335,7 +362,21 @@ export default function MatrixTable({ rows, cols, time }: MatrixTableProps) {
               onChange={(e) => setPlayerName(e.target.value)}
             ></input>
             <br />
-            <button onClick={saveRecord} className="glow-on-hover save-record-btn">Save Record</button>
+            <button
+              onClick={saveRecord}
+              className="glow-on-hover save-record-btn"
+            >
+              Save Record
+            </button>
+            <p className="challenge-link-container">
+              Challenge Your Friends:{" "}
+              <a className="challenge-link" href={generateChallengeLink()}>
+                {generateChallengeLink()}
+              </a>
+              <button className="copy-link" onClick={copyChallengeLink}>
+                {isCopied ? "Copied!" : "Copy Link"}
+              </button>
+            </p>
             <button onClick={closeModal1} className="glow-on-hover close-btn">
               Close
             </button>

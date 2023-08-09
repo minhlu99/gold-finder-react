@@ -30,7 +30,7 @@ export default function LeaderBoard({ level }: LeaderBoardProps) {
     <div className="leader-board-container">
       <div className="leader-board-content">
         <h2 className="leader-board-header">
-          Leader Board <br/>
+          Leader Board <br />
           {level} x {level}
         </h2>
         {leaderBoardData.map((player, index) => (

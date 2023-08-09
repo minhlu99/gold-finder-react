@@ -5,10 +5,10 @@
 }
 
 body {
-display: flex;
-flex-direction: row;
-height: 100%;
-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 1200px;
 }
 
 .App {
@@ -21,42 +21,41 @@ h1 {
 }
 
 .white {
-  background-image: '../src/assets/Solid_white.png';
+  background-image: "../src/assets/Solid_white.png";
   border: 1px solid black;
   cursor: pointer;
 }
 
 .cell-size {
-width: 50px;
-height: 50px;
-border: 1px solid black;
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
 }
 
 .modify-cell-size {
-width: 40px;
-height: 40px;
+  width: 40px;
+  height: 40px;
 }
 
 .modify-cell-size1 {
-width: 30px;
-height: 30px;
+  width: 30px;
+  height: 30px;
 }
 
 .red {
-  background-image: '../src/assets/Solid_white.png';
+  background-image: "../src/assets/Solid_white.png";
   border: 1px solid black;
   cursor: pointer;
 }
 
 .turn-gold {
-  background-image: url('../public/pot-of-gold.svg');
+  background-image: url("../public/pot-of-gold.svg");
   border: 3px solid #edcd22;
 }
 
 .turn-boom {
   background-image: url("../public/boom-3307008.svg");
   border: 3px solid #e71b1b;
-
 }
 
 .counters {
@@ -67,7 +66,7 @@ height: 30px;
 }
 
 .countersWrapper {
-background-color: white;
+  background-color: white;
 }
 
 .counterWrapper {
@@ -86,9 +85,8 @@ background-color: white;
 }
 
 .modify-counter-font-size {
-font-size: 14px;
+  font-size: 14px;
 }
-
 
 .matrixTable-container {
   display: flex;
@@ -108,7 +106,7 @@ font-size: 14px;
   border-image-source: linear-gradient(to right bottom, #f2e552, #bf930f);
   padding: 10px;
   animation: glowing 20s linear infinite;
-  transition: opacity .3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
   border-radius: 10px;
 }
 .input-group {
@@ -119,34 +117,33 @@ font-size: 14px;
 }
 
 .input-wrapper {
-display: flex;
-flex-direction: column;
-align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .inp {
-font-size: 19px;
-font-family:'Courier New', Courier, monospace;
-display: flex;
-
+  font-size: 19px;
+  font-family: "Courier New", Courier, monospace;
+  display: flex;
 }
 
 .select-input {
-margin: 10px 0;
-font-size: 24px;
-width: 300px;
-text-align: center;
-height: 40px;
-border-radius: 4px;
-background-color: #f1f1f1;
-overflow: hidden;
-font-family:'Courier New', Courier, monospace;
-outline: none;
+  margin: 10px 0;
+  font-size: 24px;
+  width: 300px;
+  text-align: center;
+  height: 40px;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  overflow: hidden;
+  font-family: "Courier New", Courier, monospace;
+  outline: none;
 }
 
 .select-input:hover {
-border: #f2e552 5px solid;
-cursor: pointer;
+  border: #f2e552 5px solid;
+  cursor: pointer;
 }
 
 .glow-on-hover {
@@ -161,23 +158,34 @@ cursor: pointer;
   z-index: 0;
   border-radius: 10px;
   font-size: 24px;
-  font-family:'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #play-btn-icon {
-display: flex;
-align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .glow-on-hover:before {
-  content: '';
-  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
   position: absolute;
   top: -2px;
-  left:-2px;
+  left: -2px;
   background-size: 400%;
   z-index: -1;
   filter: blur(5px);
@@ -185,12 +193,12 @@ align-items: center;
   height: calc(100% + 4px);
   animation: glowing 20s linear infinite;
   opacity: 0;
-  transition: opacity .3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
   border-radius: 10px;
 }
 
 .glow-on-hover:active {
-  color: #000
+  color: #000;
 }
 
 .glow-on-hover:active:after {
@@ -203,7 +211,7 @@ align-items: center;
 
 .glow-on-hover:after {
   z-index: -1;
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -214,9 +222,15 @@ align-items: center;
 }
 
 @keyframes glowing {
-  0% { background-position: 0 0; }
-  50% { background-position: 400% 0; }
-  100% { background-position: 0 0; }
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
 }
 
 /* Styles for the modal */
@@ -260,100 +274,98 @@ align-items: center;
 }
 
 #matrixTable td.flag {
-  background-image: url('/public/flag.svg');
+  background-image: url("/public/flag.svg");
   background-repeat: no-repeat;
   border: orange 3px solid;
 }
 
 .tutorial-container {
-border: #dfb52a 5px solid;
-margin-top: 15px;
-box-sizing: border-box;
+  border: #dfb52a 5px solid;
+  margin-top: 15px;
+  box-sizing: border-box;
 }
 
 .tutorial-header {
-margin: 10px 0;
-text-align: center;
-font-size: 24px;
+  margin: 10px 0;
+  text-align: center;
+  font-size: 24px;
 }
 
 .left-click {
-display: flex;
-width: 100%;
-height: 10%;
-align-items: center;
-font-size: 18px;
-justify-content: center;
+  display: flex;
+  width: 100%;
+  height: 10%;
+  align-items: center;
+  font-size: 18px;
+  justify-content: center;
 }
 
 .left-click-image {
-width: 50px;
-height: 50px;
-margin-right: 10px;
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
 }
 
 .gold-image {
-border-right: #000 solid 2px;
+  border-right: #000 solid 2px;
 }
 
 .right-click {
-margin-top: 10px;
-display: flex;
-align-items: center;
-font-size: 18px;
-justify-content: center;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  justify-content: center;
 }
 
 .right-click-image {
-width: 50px;
-height: 50px;
-margin-left: 30px;
-margin-right: 45px;
+  width: 50px;
+  height: 50px;
+  margin-left: 30px;
+  margin-right: 45px;
 }
 
 .tutorial-content {
-width: 400px;
-display: flex;
-flex-direction: column;
-padding: 10px;
-text-align: justify;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  text-align: justify;
 }
 
 .tutorial-content > h4 {
-text-align: center;
-margin: 5px 0;
-line-height: 20px;
+  text-align: center;
+  margin: 5px 0;
+  line-height: 20px;
 }
 
 .win-or-lose {
-border: #edcd22 2px solid;
-font-size: 18px;
-padding: 5px;
+  border: #edcd22 2px solid;
+  font-size: 18px;
+  padding: 5px;
 }
 
 .win-or-lose > h3 {
-text-align: center;
+  text-align: center;
 }
 
-
 .timer-container {
-position: absolute;
-top: 10px;
-right: 40px;
-margin-top: 50px;
-height: 50px;
-width: 180px;
-background-color: #f2e552;
-font-size: 42px;
-text-align: center;
-border-radius: 20px;
-
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  margin-top: 50px;
+  height: 50px;
+  width: 180px;
+  background-color: #f2e552;
+  font-size: 42px;
+  text-align: center;
+  border-radius: 20px;
 }
 
 .time-taken {
-font-size: 28px;
-margin: 10px 0px;
-border-radius: 5px;
+  font-size: 28px;
+  margin: 10px 0px;
+  border-radius: 5px;
 }
 
 #win-time {
@@ -361,22 +373,22 @@ border-radius: 5px;
 }
 
 #win-header {
-font-size: 36px;
+  font-size: 36px;
 }
 
 .close-btn {
-width: 100%;
+  width: 100%;
 }
 
 .lose-wrapper {
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .highlight {
-background-color: #f7f391;
+  background-color: #f7f391;
 }
 
 .input-save-player {
@@ -396,21 +408,21 @@ background-color: #f7f391;
 }
 
 .save-record-btn {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   text-align: center;
   width: 40%;
   align-items: center;
-  left: 130px;
+  left: 150px;
 }
 
 .leader-board-container {
-  border: 2px solid #bf930f;
+  border: #dfb52a 5px solid;
   width: 230px;
   height: 620px;
   margin-left: 5px;
   position: absolute;
   top: 150px;
-  right: 20px
+  right: 20px;
 }
 
 .leader-board-content {
@@ -433,4 +445,23 @@ background-color: #f7f391;
   flex-direction: column;
   align-items: center;
   padding: 10px 0;
+}
+
+.challenge-link-container {
+  font-size: 18px;
+  display: flex;
+  height: 100px;
+  flex-direction: column;
+  align-items: center;
+  align-content: space-between;
+}
+
+.challenge-link {
+  font-size: 14px;
+  margin: 10px;
+}
+
+.copy-link {
+  height: 40px;
+  width: 80px;
 }
