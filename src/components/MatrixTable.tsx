@@ -255,7 +255,7 @@ export default function MatrixTable({
   }
 
   function generateChallengeLink() {
-    return `http://localhost:3000/?id=${idMatrix}`;
+    return `https://gold-finder.techwiz.tech/?id=${idMatrix}`;
   }
 
   function copyChallengeLink() {
