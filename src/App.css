@@ -465,3 +465,23 @@ h1 {
   height: 40px;
   width: 80px;
 }
+
+/* Highlight row */
+.highlight-row {
+  position: relative;
+
+  background-color: rgba(255, 255, 0, 0.5); /* Adjust highlight color */
+  top: 0;
+  left: 0;
+
+}
+
+/* Highlight column */
+.highlight-col {
+  position: relative;
+
+  background-color: rgba(255, 255, 0, 0.5); /* Adjust highlight color */
+  top: 0;
+  left: 0;
+
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import genMatrixApi from "../api/genMatrixApi";
 import handleClickApi from "../api/handleClickApi";
 import checkWinApi from "../api/checkWin";
@@ -27,6 +27,7 @@ export default function MatrixTable({
   __rowCounter,
   playById,
 }: MatrixTableProps) {
+
   const [idMatrix, setIdMatrix] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -156,7 +157,7 @@ export default function MatrixTable({
         clearInterval(interval);
       }
     };
-  }, [rows, cols, time]);
+  }, [rows, time]);
 
   useEffect(() => {
     if (gameOver) {
@@ -165,7 +166,7 @@ export default function MatrixTable({
         clearInterval(timerInterval);
       }
     }
-  }, [gameOver, timerInterval]);
+  }, [gameOver]);
 
   function handleFlag(rowIndex: number, cellIndex: number) {
     if (gameOver || matrix[rowIndex][cellIndex].open) return; //disable click when game over
@@ -178,11 +179,16 @@ export default function MatrixTable({
     idMatrix: string,
     rowIndex: number,
     cellIndex: number
-  ) {
+    ) {
+    const cell = matrix[rowIndex][cellIndex];
+    if (cell.flag || gameOver || cell.open) {
+      // Do nothing if the cell is flagged, game over, or already opened
+      return;
+    }
     const newMat = [...matrix];
     newMat[rowIndex][cellIndex].open = true;
     setMatrix(newMat);
-    if (gameOver) return;
+
     try {
       console.log("createMatrix");
       const res = await handleClickApi.handleClick(
@@ -265,11 +271,15 @@ export default function MatrixTable({
       setIsCopied(true);
     });
   }
+  console.log('enter');
+  
 
   return (
     <div className="matrixTable-container">
+
       <table id="matrixTable">
         <table className="matrixTable-child">
+
           <tr className="headerRow">
             <td></td>
             {_colCounter?.map((col) => (
@@ -291,8 +301,11 @@ export default function MatrixTable({
               key={rowIndex + 1}
               className={highlightedRowIndex === rowIndex ? `highlight` : ``}
             >
+                            
               <td className="countersWrapper">
+
                 <div className="counters">
+                  
                   {_rowCounter[rowIndex]?.map((value, index) => (
                     <div
                       key={index}
@@ -301,6 +314,7 @@ export default function MatrixTable({
                       }`}
                     >
                       {value}
+                      
                     </div>
                   ))}
                 </div>
