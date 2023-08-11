@@ -31,6 +31,7 @@ export default function MatrixTable({
   const [idMatrix, setIdMatrix] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  // const [isBoomOrGold, setIsBoomOrGold] = useState<string>("")
   const [playerName, setPlayerName] = useState("");
   const [openedGoldCells, setOpenedGoldCells] = useState<number>(0);
   const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
@@ -198,6 +199,15 @@ export default function MatrixTable({
       );
 
       const result = res.data;
+
+      // if (result === "boom") {
+      //   setShowLoseModal(true)
+      //   setGameOver(true)
+      //   setIsBoomOrGold("boom")
+      // } else if (result === "gold") {
+      //   setIsBoomOrGold("gold")
+      //   setOpenedGoldCells((prevCount) => prevCount + 1)
+      // }
 
       setCellStatus((prevCellStatus) => {
         const cellKey = `${rowIndex}-${cellIndex}`;

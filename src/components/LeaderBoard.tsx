@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import getLeaderBoardApi from "../api/getLeaderBoard";
 
+
 interface LeaderBoardProps {
   level: number;
 }

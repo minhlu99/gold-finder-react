@@ -1,5 +1,5 @@
 import flagImg from "../assets/flag.svg";
-import goldImg from "../assets/pot-of-gold.png";
+import goldImg from "../assets/pot-of-gold-2.png";
 import boomImg from "../assets/boom-3307008.png";
 
 export default function Introduction() {

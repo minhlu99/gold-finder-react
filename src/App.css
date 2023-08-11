@@ -49,8 +49,10 @@ h1 {
 }
 
 .turn-gold {
-  background-image: url("../public/pot-of-gold.svg");
+  background-image: url("../public/pot-of-gold-2.png");
   border: 3px solid #edcd22;
+  background-size: 50px 50px;
+  background-position: center center;
 }
 
 .turn-boom {
