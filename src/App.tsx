@@ -12,7 +12,7 @@ function App() {
   const [_colCounter, set_ColCounter] = useState<number[][]>([]); // Define colCounter state
   const [_rowCounter, set_RowCounter] = useState<number[][]>([]);
   const [playById, setPlayById] = useState(false);
-
+  const [refreshLeaderboard, setRefreshLeaderboard] = useState(false);
   const [size, setSize] = useState(6);
   const [time, setTime] = useState(0);
   const [isPlay, setIsPlay] = useState(false);
@@ -35,6 +35,11 @@ function App() {
       throw error; // Rethrow the error to be caught at the calling site
     }
   }
+
+  const handleRecordSaved = () => {
+    // Call this function after saving a record to trigger leaderboard refresh
+    setRefreshLeaderboard(!refreshLeaderboard);
+  };
 
   useEffect(() => {
     id && genMatrixById();
@@ -61,9 +66,10 @@ function App() {
           __colCounter={_colCounter}
           __rowCounter={_rowCounter}
           playById={playById}
+          onRecordSaved={handleRecordSaved}
         />
       )}
-      <LeaderBoard level={size} />
+      <LeaderBoard level={size} refresh={refreshLeaderboard} />
     </div>
   );
 }

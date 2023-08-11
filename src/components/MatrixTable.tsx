@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import genMatrixApi from "../api/genMatrixApi";
 import handleClickApi from "../api/handleClickApi";
 import checkWinApi from "../api/checkWin";
@@ -11,6 +11,7 @@ interface MatrixTableProps {
   __colCounter: number[][];
   __rowCounter: number[][];
   playById: boolean;
+  onRecordSaved: () => void;
 }
 
 interface ICell {
@@ -26,6 +27,7 @@ export default function MatrixTable({
   __colCounter,
   __rowCounter,
   playById,
+  onRecordSaved,
 }: MatrixTableProps) {
 
   const [idMatrix, setIdMatrix] = useState<string>("");
@@ -266,6 +268,9 @@ export default function MatrixTable({
       await saveRecordApi.saveRecord(recordData);
 
       setIsSaved(true)
+      if (onRecordSaved) {
+        onRecordSaved();
+      }
     } catch (error) {
       console.error("Error saving record:", error);
     }

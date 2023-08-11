@@ -4,6 +4,7 @@ import getLeaderBoardApi from "../api/getLeaderBoard";
 
 interface LeaderBoardProps {
   level: number;
+  refresh: boolean;
 }
 
 interface PlayerData {
@@ -11,7 +12,7 @@ interface PlayerData {
   time: string;
 }
 
-export default function LeaderBoard({ level }: LeaderBoardProps) {
+export default function LeaderBoard({ level, refresh }: LeaderBoardProps) {
   const [leaderBoardData, setLeaderBoardData] = useState<PlayerData[]>([]);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function LeaderBoard({ level }: LeaderBoardProps) {
     }
 
     fetchLeaderBoard();
-  }, [level]);
+  }, [level, refresh]);
 
   return (
     <div className="leader-board-container">
