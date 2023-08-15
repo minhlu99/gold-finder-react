@@ -40,14 +40,10 @@ export default function Introduction() {
           game mechanics.
           <br />
         </p>
-        <p>
-          {" "}
-          <br />
-          <h4>
-            Your goal is to find all the gold and avoid the bombs. Let's get
-            started:
-          </h4>
-        </p>
+        <h4>
+          Your goal is to find all the gold and avoid the bombs. Let's get
+          started:
+        </h4>
         <p>Step 1: Choose Grid Size</p>
         <p>Step 2: Play the Game</p>
         <p>Step 3: Find All the Gold</p>

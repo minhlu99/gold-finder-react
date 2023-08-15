@@ -227,10 +227,15 @@ export default function MatrixTable({
           return { ...prevCellStatus, [cellKey]: "unopened" };
         }
       });
+      checkRemainGold()
     } catch (error) {
       console.error("Error in createMatrix:", error);
       throw error;
     }
+  }
+
+  const checkRemainGold = () => {
+    console.log(cellStatus)
   }
 
   useEffect(() => {
@@ -286,31 +291,32 @@ export default function MatrixTable({
       setIsCopied(true);
     });
   }
-  console.log('enter');
-  
 
   return (
     <div className="matrixTable-container">
 
-      <table id="matrixTable">
+      <div id="matrixTable">
         <table className="matrixTable-child">
-
+          <thead>
           <tr className="headerRow">
             <td></td>
-            {_colCounter?.map((col) => (
-              <td className="counterWrapper">
-                {col.map((value) => (
-                  <td
+            {_colCounter?.map((col, index) => (
+              <td key={index} className="counterWrapper">
+                {col.map((value, index2) => (
+                  <div
+                    key={index2}
                     className={`counter ${
                       rows > 15 && "modify-counter-font-size"
                     }`}
                   >
                     {value}
-                  </td>
+                  </div>
                 ))}
               </td>
             ))}
           </tr>
+          </thead>
+          <tbody>
           {matrix.map((row, rowIndex) => (
             <tr
               key={rowIndex + 1}
@@ -336,7 +342,6 @@ export default function MatrixTable({
               </td>
               {row.map((cell, cellIndex) => {
                 const cellKey = `${rowIndex}-${cellIndex}`;
-                const isOpened = cellStatus[cellKey] !== "unopened";
                 const isBoom = cellStatus[cellKey] === "boom";
                 const isGold = cellStatus[cellKey] === "gold";
                 return (
@@ -366,8 +371,9 @@ export default function MatrixTable({
               })}
             </tr>
           ))}
+          </tbody>
         </table>
-      </table>
+      </div>
       <div className="timer-container">
         <span id="timer">
           {new Date(elapsedTime * 1000).toISOString().substr(11, 8)}
