@@ -84,6 +84,7 @@ export default function MatrixTable({
     setOpenedGoldCells(0);
     setHighlightedRowIndex(null);
     setHighlightedColIndex(null);
+    setIsSaved(false);
     setIdMatrix("");
   }
 
@@ -391,6 +392,7 @@ export default function MatrixTable({
                 {new Date(elapsedTime * 1000).toISOString().substr(11, 8)}
               </span>
             </p>
+            <p className="rank-index">You ranked at Top</p>
             <input
               className="input-save-player"
               placeholder="Enter your name"
