@@ -1,11 +1,21 @@
 import flagImg from "../assets/flag.svg";
 import goldImg from "../assets/pot-of-gold-2.png";
 import boomImg from "../assets/boom-3307008.png";
+import techwizLogo from "../assets/Techwiz LOGO.png"
 
 export default function Introduction() {
   return (
     <div className="tutorial-container">
       <h3 className="tutorial-header">Tutorial</h3>
+      <div className="tutorial-goal">
+      <h4>
+          Your goal is to find all the gold and avoid the bombs. Let's get
+          started:
+        </h4>
+        <p>Step 1: Choose Grid Size</p>
+        <p>Step 2: Play the Game</p>
+        <p>Step 3: Find All the Gold</p>
+      </div>
       <div className="left-click">
         <img
           src={goldImg}
@@ -40,13 +50,6 @@ export default function Introduction() {
           game mechanics.
           <br />
         </p>
-        <h4>
-          Your goal is to find all the gold and avoid the bombs. Let's get
-          started:
-        </h4>
-        <p>Step 1: Choose Grid Size</p>
-        <p>Step 2: Play the Game</p>
-        <p>Step 3: Find All the Gold</p>
         <br />
         <div className="win-or-lose">
           <h3>Win or Lose</h3>
@@ -59,6 +62,11 @@ export default function Introduction() {
           </p>
           <br />
           <h3>Enjoy the game!</h3>
+        </div>
+        <div className="tutorial-powered-by">
+          <p>Powered by</p>
+          <img src={techwizLogo} alt="Techwiz-logo" className="techwiz-logo" />
+
         </div>
       </div>
     </div>

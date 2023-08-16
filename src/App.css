@@ -288,6 +288,25 @@ h1 {
   font-size: 24px;
 }
 
+.tutorial-goal {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px 10px 10px;
+  text-align: justify;
+}
+
+.tutorial-goal > h4 {
+  text-align: center;
+  line-height: 20px;
+  margin-bottom: 10px;
+}
+
+.tutorial-goal > p {
+  margin-left: 100px;
+  line-height: 20px;
+}
+
 .left-click {
   display: flex;
   width: 100%;
@@ -330,12 +349,6 @@ h1 {
   text-align: justify;
 }
 
-.tutorial-content > h4 {
-  text-align: center;
-  margin: 5px 0;
-  line-height: 20px;
-}
-
 .win-or-lose {
   border: #edcd22 2px solid;
   font-size: 18px;
@@ -344,6 +357,22 @@ h1 {
 
 .win-or-lose > h3 {
   text-align: center;
+}
+
+.tutorial-powered-by {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tutorial-powered-by > p {
+  font-weight: 500;
+}
+
+.techwiz-logo {
+  width: 100px;
+  margin-left: 5px;
 }
 
 .timer-container {
